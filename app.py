@@ -1,14 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Jun  2 21:16:35 2021
-
-@author: Ivan
-版權屬於「行銷搬進大程式」所有若有疑問可聯絡ivanyang0606@gmail.com
-
-Line Bot聊天機器人
-第四章 選單功能
-按鈕樣板TemplateSendMessage
-"""
 #載入LineBot所需要的套件
 from flask import Flask, request, abort
 
@@ -50,36 +40,110 @@ def callback():
 #訊息傳遞區塊
 ##### 基本上程式編輯都在這個function #####
 @handler.add(MessageEvent, message=TextMessage)
+# 訊息傳遞區塊
+@handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    message = text=event.message.text
-    if re.match('告訴我秘密',message):
-        buttons_template_message = TemplateSendMessage(
-        alt_text='這個看不到',
-        template=ButtonsTemplate(
-            thumbnail_image_url='https://i.imgur.com/wpM584d.jpg',
-            title='行銷搬進大程式',
-            text='選單功能－TemplateSendMessage',
-            actions=[
-                PostbackAction(
-                    label='偷偷傳資料',
-                    display_text='檯面上',
-                    data='action=檯面下'
-                ),
-                MessageAction(
-                    label='光明正大傳資料',
-                    text='我就是資料'
-                ),
-                URIAction(
-                    label='行銷搬進大程式',
-                    uri='https://marketingliveincode.com/'
+    if isinstance(event, MessageEvent):
+        message = event.message.text
+        if message == "哈囉":
+            line_bot_api.reply_message(
+                event.reply_token,
+                TemplateSendMessage(
+                    alt_text='Buttons template',
+                    template=ButtonsTemplate(
+                        title='Category',
+                        text='請選擇美食分類',
+                        actions=[
+                            PostbackTemplateAction(
+                                label='餐廳',
+                                text='餐廳',
+                                data='A&餐廳'
+                            ),
+                            PostbackTemplateAction(
+                                label='飲料店',
+                                text='飲料店',
+                                data='B&飲料店'
+                            ),
+                            PostbackTemplateAction(
+                                label='咖啡廳',
+                                text='咖啡廳',
+                                data='B&咖啡廳'
+                            ),
+                            PostbackTemplateAction(
+                                label='酒吧',
+                                text='酒吧',
+                                data='B&酒吧'
+                            )
+                        ]
+                    )
                 )
-            ]
-        )
-    )
-        line_bot_api.reply_message(event.reply_token, buttons_template_message)
+            )
+    elif isinstance(event,PostbackEvent):
+        if event.postbackback.data[0:1] == 'A' or event.postbackback.data[0:1] == 'B':
+            shoptype = event.postback.data[2:]
+            if shoptype != '餐廳':
+                line_bot_api.reply_message(   # 回復「選擇價位類別」按鈕樣板訊息
+                    event.reply_token,
+                    TemplateSendMessage(
+                        alt_text='Buttons template',
+                        template=ButtonsTemplate(
+                            title='Price',
+                            text='請選擇價位',
+                            actions=[
+                                PostbackTemplateAction(  # 將第一步驟選擇的餐廳，包含在第二步驟的資料中
+                                    label='$0~$100',
+                                    text='低價位',
+                                    data='C&' + shoptype + '&低價位'
+                                ),
+                                PostbackTemplateAction(
+                                    label='$100-$300',
+                                    text='中價位',
+                                    data='C&' + shoptype + '&中價位'
+                                ),
+                                PostbackTemplateAction(
+                                    label='$300以上',
+                                    text='高價位',
+                                    data='C&' + shoptype + '&高價位'
+                                )
+                            ]
+                        )
+                    )
+                )
+        elif event.postback.data[0:1] == "C":
+            pricechoice = event.postback.data[-3:]
+            line_bot_api.reply_message(   # 回復「選擇評價類別」按鈕樣板訊息
+                event.reply_token,
+                TemplateSendMessage(
+                    alt_text='Buttons template',
+                    template=ButtonsTemplate(
+                        title='reviews',
+                        text='請選擇評價限制',
+                        actions=[
+                            PostbackTemplateAction(  # 將第一、二步驟選擇的餐廳，包含在第三步驟的資料中
+                                label='3.5星以上',
+                                text='簡簡單單',
+                                data='D&' + shoptype + '&' + pricechoice + '&3.5星以上'
+                            ),
+                            PostbackTemplateAction(
+                                label='4星以上',
+                                text='來間好一點的',
+                                data='D&' + shoptype + '&' + pricechoice + '&4星以上'
+                            ),
+                            PostbackTemplateAction(
+                                label='4.5星以上',
+                                text='真嚴格',
+                                data='D&' + shoptype + '&' + pricechoice + '&4.5星以上'
+                            )
+                        ]
+                    )
+                )
+            )
+            
+                
     else:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
-#主程式
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
+
+# 主程式
 import os
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
