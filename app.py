@@ -43,7 +43,7 @@ def callback():
 # 訊息傳遞區塊
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    if isinstance(event.message, TextMessage):
+    if isinstance(event.message, MessageEvent):
         message = event.message.text
         if message == "哈囉":
             line_bot_api.reply_message(
