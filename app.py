@@ -78,7 +78,9 @@ def handle_message(event):
                     )
                 )
             )
-    elif isinstance(event,PostbackEvent):
+@handler.add(PostbackEvent)
+def handle_postback(event):
+    if isinstance(event,PostbackEvent):
         if event.postback.data[0:1] == 'A' or event.postback.data[0:1] == 'B':
             shoptype = event.postback.data[2:]
             if shoptype != '餐廳':
@@ -140,8 +142,8 @@ def handle_message(event):
             )
             
                 
-    else:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
+    #else:
+        #line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
 
 # 主程式
 import os
