@@ -74,33 +74,33 @@ def callback():
             if event.postback.data[0:1] == 'A' or event.postback.data[0:1] == 'B':
                 shoptype = event.postback.data[2:]
                 if shoptype != '餐廳':
-                line_bot_api.reply_message(   # 回復「選擇價位類別」按鈕樣板訊息
-                    event.reply_token,
-                    TemplateSendMessage(
-                        alt_text='Buttons template',
-                        template=ButtonsTemplate(
-                            title='Price',
-                            text='請選擇價位',
-                            actions=[
-                                PostbackTemplateAction(  # 將第一步驟選擇的餐廳，包含在第二步驟的資料中
-                                    label='$0~$100',
-                                    text='低價位',
-                                    data='C&' + shoptype + '&低價位'
-                                ),
-                                PostbackTemplateAction(
-                                    label='$100-$300',
-                                    text='中價位',
-                                    data='C&' + shoptype + '&中價位'
-                                ),
-                                PostbackTemplateAction(
-                                    label='$300以上',
-                                    text='高價位',
-                                    data='C&' + shoptype + '&高價位'
-                                )
-                            ]
+                    line_bot_api.reply_message(   # 回復「選擇價位類別」按鈕樣板訊息
+                        event.reply_token,
+                        TemplateSendMessage(
+                            alt_text='Buttons template',
+                            template=ButtonsTemplate(
+                                title='Price',
+                                text='請選擇價位',
+                                actions=[
+                                    PostbackTemplateAction(  # 將第一步驟選擇的餐廳，包含在第二步驟的資料中
+                                        label='$0~$100',
+                                        text='低價位',
+                                        data='C&' + shoptype + '&低價位'
+                                    ),
+                                    PostbackTemplateAction(
+                                        label='$100-$300',
+                                        text='中價位',
+                                        data='C&' + shoptype + '&中價位'
+                                    ),
+                                    PostbackTemplateAction(
+                                        label='$300以上',
+                                        text='高價位',
+                                        data='C&' + shoptype + '&高價位'
+                                    )
+                                ]
+                            )
                         )
                     )
-                )
             elif event.postback.data[0:1] == "C":
                 pricechoice = event.postback.data[-3:]
                 line_bot_api.reply_message(   # 回復「選擇評價類別」按鈕樣板訊息
