@@ -35,7 +35,7 @@ def callback():
     except InvalidSignatureError:
         abort(400)
     for event in events:
-        if isinstance(event.message, MessageEvent):
+        if isinstance(event, MessageEvent):
             message = event.message.text
             if message == "哈囉":
                 line_bot_api.reply_message(
