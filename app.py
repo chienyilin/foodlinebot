@@ -73,7 +73,7 @@ def callback():
         elif isinstance(event,PostbackEvent):
             if event.postback.data[0:1] == 'A' or event.postback.data[0:1] == 'B':
                 shoptype = event.postback.data[2:]
-                #if shoptype != '餐廳':
+                if shoptype != '餐廳':
                 line_bot_api.reply_message(   # 回復「選擇價位類別」按鈕樣板訊息
                     event.reply_token,
                     TemplateSendMessage(
