@@ -31,58 +31,49 @@ def callback():
 
     # handle webhook body
     try:
-        handler.handle(body, signature)
+        events = handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
-
-    return 'OK'
-
-#訊息傳遞區塊
-##### 基本上程式編輯都在這個function #####
-# 訊息傳遞區塊
-@handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    if isinstance(event.message, MessageEvent):
-        message = event.message.text
-        if message == "哈囉":
-            line_bot_api.reply_message(
-                event.reply_token,
-                TemplateSendMessage(
-                    alt_text='Buttons template',
-                    template=ButtonsTemplate(
-                        title='Category',
-                        text='請選擇美食分類',
-                        actions=[
-                            PostbackTemplateAction(
-                                label='餐廳',
-                                text='餐廳',
-                                data='A&餐廳'
-                            ),
-                            PostbackTemplateAction(
-                                label='飲料店',
-                                text='飲料店',
-                                data='B&飲料店'
-                            ),
-                            PostbackTemplateAction(
-                                label='咖啡廳',
-                                text='咖啡廳',
-                                data='B&咖啡廳'
-                            ),
-                            PostbackTemplateAction(
-                                label='酒吧',
-                                text='酒吧',
-                                data='B&酒吧'
-                            )
-                        ]
+    for event in events:
+        if isinstance(event.message, MessageEvent):
+            message = event.message.text
+            if message == "哈囉":
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TemplateSendMessage(
+                        alt_text='Buttons template',
+                        template=ButtonsTemplate(
+                            title='Category',
+                            text='請選擇美食分類',
+                            actions=[
+                                PostbackTemplateAction(
+                                    label='餐廳',
+                                    text='餐廳',
+                                    data='A&餐廳'
+                                ),
+                                PostbackTemplateAction(
+                                    label='飲料店',
+                                    text='飲料店',
+                                    data='B&飲料店'
+                                ),
+                                PostbackTemplateAction(
+                                    label='咖啡廳',
+                                    text='咖啡廳',
+                                    data='B&咖啡廳'
+                                ),
+                                PostbackTemplateAction(
+                                    label='酒吧',
+                                    text='酒吧',
+                                    data='B&酒吧'
+                                )
+                            ]
+                        )
                     )
                 )
-            )
-@handler.add(PostbackEvent)
-def handle_postback(event):
-    if isinstance(event,PostbackEvent):
-        if event.postback.data[0:1] == 'A' or event.postback.data[0:1] == 'B':
-            shoptype = event.postback.data[2:]
-            if shoptype != '餐廳':
+        elif isinstance(event,PostbackEvent):
+            if event.postback.data[0:1] == 'A' or event.postback.data[0:1] == 'B':
+                shoptype = event.postback.data[2:]
+                #if shoptype != '餐廳':
                 line_bot_api.reply_message(   # 回復「選擇價位類別」按鈕樣板訊息
                     event.reply_token,
                     TemplateSendMessage(
@@ -110,36 +101,36 @@ def handle_postback(event):
                         )
                     )
                 )
-        elif event.postback.data[0:1] == "C":
-            pricechoice = event.postback.data[-3:]
-            line_bot_api.reply_message(   # 回復「選擇評價類別」按鈕樣板訊息
-                event.reply_token,
-                TemplateSendMessage(
-                    alt_text='Buttons template',
-                    template=ButtonsTemplate(
-                        title='reviews',
-                        text='請選擇評價限制',
-                        actions=[
-                            PostbackTemplateAction(  # 將第一、二步驟選擇的餐廳，包含在第三步驟的資料中
-                                label='3.5星以上',
-                                text='簡簡單單',
-                                data='D&' + shoptype + '&' + pricechoice + '&3.5星以上'
-                            ),
-                            PostbackTemplateAction(
-                                label='4星以上',
-                                text='來間好一點的',
-                                data='D&' + shoptype + '&' + pricechoice + '&4星以上'
-                            ),
-                            PostbackTemplateAction(
-                                label='4.5星以上',
-                                text='真嚴格',
-                                data='D&' + shoptype + '&' + pricechoice + '&4.5星以上'
-                            )
-                        ]
+            elif event.postback.data[0:1] == "C":
+                pricechoice = event.postback.data[-3:]
+                line_bot_api.reply_message(   # 回復「選擇評價類別」按鈕樣板訊息
+                    event.reply_token,
+                    TemplateSendMessage(
+                        alt_text='Buttons template',
+                        template=ButtonsTemplate(
+                            title='reviews',
+                            text='請選擇評價限制',
+                            actions=[
+                                PostbackTemplateAction(  # 將第一、二步驟選擇的餐廳，包含在第三步驟的資料中
+                                    label='3.5星以上',
+                                    text='簡簡單單',
+                                    data='D&' + shoptype + '&' + pricechoice + '&3.5星以上'
+                                ),
+                                PostbackTemplateAction(
+                                    label='4星以上',
+                                    text='來間好一點的',
+                                    data='D&' + shoptype + '&' + pricechoice + '&4星以上'
+                                ),
+                                PostbackTemplateAction(
+                                    label='4.5星以上',
+                                    text='真嚴格',
+                                    data='D&' + shoptype + '&' + pricechoice + '&4.5星以上'
+                                )
+                            ]
+                        )
                     )
                 )
-            )
-            
+                
                 
     #else:
         #line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
