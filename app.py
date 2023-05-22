@@ -11,6 +11,7 @@ from linebot.exceptions import (
 from linebot.models import *
 import re
 app = Flask(__name__)
+from django.http import HttpResponse
 
 # 必須放上自己的Channel Access Token
 line_bot_api = LineBotApi('5kd4nm3bDWl+WVCow3m0qje706VXFDrsSgB0QiB/ZOB2ZFIj5mXMYm6U6AAdh31+yIOY+sdNl9blhd0qijZl9lB7+W5l7jNZ+kOWbYG8tYDUY3MBk2nMu5nNN1XdfFY7VeAowBCB/GpOmhX8VganBAdB04t89/1O/w1cDnyilFU=')
@@ -130,7 +131,7 @@ def callback():
                         )
                     )
                 )
-                
+    return HttpResponse()             
                 
     #else:
         #line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))

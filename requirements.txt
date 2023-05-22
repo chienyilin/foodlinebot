@@ -2,9 +2,10 @@ line-bot-sdk
 bs4
 flask
 pymongo
-datetime
 pandas
+datetime
 SnowNLP
 emoji
 pyshorteners
 scipy
+django
