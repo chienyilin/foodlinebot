@@ -102,6 +102,10 @@ def callback():
                         )
                     )
             elif event.postback.data[0:1] == "C":
+                if '咖啡廳' in  event.postback.data or '飲料店' in event.postback.data:
+                    shoptype = event.postback.data[2:5]
+                elif '餐廳' in  event.postback.data or '酒吧' in event.postback.data:
+                    shoptype = event.postback.data[2:4]
                 pricechoice = event.postback.data[-3:]
                 line_bot_api.reply_message(   # 回復「選擇評價類別」按鈕樣板訊息
                     event.reply_token,
@@ -130,7 +134,8 @@ def callback():
                         )
                     )
                 )
-    return 'ok'             
+                
+    return 'ok'          
                 
     #else:
         #line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
