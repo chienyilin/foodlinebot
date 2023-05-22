@@ -3,7 +3,7 @@
 from flask import Flask, request, abort
 
 from linebot import (
-    LineBotApi, WebhookHandler
+    LineBotApi, WebhookParser
 )
 from linebot.exceptions import (
     InvalidSignatureError
@@ -15,9 +15,9 @@ app = Flask(__name__)
 # 必須放上自己的Channel Access Token
 line_bot_api = LineBotApi('5kd4nm3bDWl+WVCow3m0qje706VXFDrsSgB0QiB/ZOB2ZFIj5mXMYm6U6AAdh31+yIOY+sdNl9blhd0qijZl9lB7+W5l7jNZ+kOWbYG8tYDUY3MBk2nMu5nNN1XdfFY7VeAowBCB/GpOmhX8VganBAdB04t89/1O/w1cDnyilFU=')
 # 必須放上自己的Channel Secret
-handler = WebhookHandler('1441b0c3a47a16b4205287848d9daa91')
+parser = WebhookParser('1441b0c3a47a16b4205287848d9daa91')
 
-line_bot_api.push_message('U26e6062efb6aacd3b61e235ce67a0587', TextSendMessage(text='你可以開始了'))
+#line_bot_api.push_message('U26e6062efb6aacd3b61e235ce67a0587', TextSendMessage(text='你可以開始了'))
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -31,7 +31,7 @@ def callback():
 
     # handle webhook body
     try:
-        events = handler.handle(body, signature)
+        events = parser.parse(body, signature)
     except InvalidSignatureError:
         abort(400)
     for event in events:
