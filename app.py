@@ -71,41 +71,95 @@ def callback():
                     )
                 )
         elif isinstance(event,PostbackEvent):
-            if event.postback.data[0:1] == 'A' or event.postback.data[0:1] == 'B':
-                shoptype = event.postback.data[2:]
-                if shoptype != '餐廳':
-                    line_bot_api.reply_message(   # 回復「選擇價位類別」按鈕樣板訊息
-                        event.reply_token,
-                        TemplateSendMessage(
-                            alt_text='Buttons template',
-                            template=ButtonsTemplate(
-                                title='Price',
-                                text='請選擇價位',
-                                actions=[
-                                    PostbackTemplateAction(  # 將第一步驟選擇的餐廳，包含在第二步驟的資料中
-                                        label='$0~$100',
-                                        text='低價位',
-                                        data='C&' + shoptype + '&低價位'
-                                    ),
-                                    PostbackTemplateAction(
-                                        label='$100-$300',
-                                        text='中價位',
-                                        data='C&' + shoptype + '&中價位'
-                                    ),
-                                    PostbackTemplateAction(
-                                        label='$300以上',
-                                        text='高價位',
-                                        data='C&' + shoptype + '&高價位'
-                                    )
-                                ]
-                            )
+            if event.postback.data[0:1] == 'A':
+                message=TextSendMessage(
+                text="選擇你想要的餐廳類型",
+                quick_reply=QuickReply(
+                    items=[
+                        QuickReplyButton(
+                            action=PostbackAction(label="早午餐",text='早午餐',data="Q&早午餐")
+                            ),
+                        QuickReplyButton(
+                            action=PostbackAction(label="中式",text='中式',data="Q&中式")
+                            ),
+                        QuickReplyButton(
+                            action=PostbackAction(label="義式",text='義式',data="Q&義式")
+                            ),
+                        QuickReplyButton(
+                            action=PostbackAction(label="日式",text='日式',data="Q&日式")
+                            ),
+                        QuickReplyButton(
+                            action=PostbackAction(label="韓式",text='韓式',data="Q&韓式")
+                            ),
+                        QuickReplyButton(
+                            action=PostbackAction(label="其他",text='其他',data="Q&其他")
+                            ),
+                        ]
+                    )
+                )
+            elif event.postback.data[0:1] == 'Q':
+                restaurant = event.postback.data[2:]
+                line_bot_api.reply_message(   # 回復「選擇價位類別」按鈕樣板訊息
+                    event.reply_token,
+                    TemplateSendMessage(
+                        alt_text='Buttons template',
+                        template=ButtonsTemplate(
+                            title='Price',
+                            text='請選擇價位',
+                            actions=[
+                                PostbackTemplateAction(  # 將第一步驟選擇的餐廳，包含在第二步驟的資料中
+                                    label='$0~$150',
+                                    text='低價位',
+                                    data='C&' + restaurant + '&低價位'
+                                ),
+                                PostbackTemplateAction(
+                                    label='$150-$300',
+                                    text='中價位',
+                                    data='C&' + restaurant + '&中價位'
+                                ),
+                                PostbackTemplateAction(
+                                    label='$300以上',
+                                    text='高價位',
+                                    data='C&' + restaurant + '&高價位'
+                                )
+                            ]
                         )
                     )
+                )
+            elif event.postback.data[0:1] == "B":
+                shoptype = event.postback.data[2:]
+                line_bot_api.reply_message(   # 回復「選擇評價類別」按鈕樣板訊息
+                    event.reply_token,
+                    TemplateSendMessage(
+                        alt_text='Buttons template',
+                        template=ButtonsTemplate(
+                            title='reviews',
+                            text='請選擇評價限制',
+                            actions=[
+                                PostbackTemplateAction(  # 將第一、二步驟選擇的餐廳，包含在第三步驟的資料中
+                                    label='3.5星以上',
+                                    text='簡簡單單',
+                                    data='D&' + shoptype + '&3.5星以上'
+                                ),
+                                PostbackTemplateAction(
+                                    label='4星以上',
+                                    text='來間好一點的',
+                                    data='D&' + shoptype + '&4星以上'
+                                ),
+                                PostbackTemplateAction(
+                                    label='4.5星以上',
+                                    text='真嚴格',
+                                    data='D&' + shoptype + '&4.5星以上'
+                                )
+                            ]
+                        )
+                    )
+                )
             elif event.postback.data[0:1] == "C":
-                if '咖啡廳' in  event.postback.data or '飲料店' in event.postback.data:
-                    shoptype = event.postback.data[2:5]
-                elif '餐廳' in  event.postback.data or '酒吧' in event.postback.data:
-                    shoptype = event.postback.data[2:4]
+                if '早午餐' in event.postback.data:
+                    restaurant = event.postback.data[2:5]
+                else:
+                    restaurant = event.postback.data[2:4]
                 pricechoice = event.postback.data[-3:]
                 line_bot_api.reply_message(   # 回復「選擇評價類別」按鈕樣板訊息
                     event.reply_token,
