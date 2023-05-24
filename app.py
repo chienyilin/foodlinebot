@@ -72,8 +72,7 @@ def callback():
                 )
         elif isinstance(event,PostbackEvent):
             if event.postback.data[0:1] == 'A':
-                message=TextSendMessage(
-                text="選擇你想要的餐廳類型",
+                flex_message=TextSendMessage(text="選擇你想要的餐廳類型",
                 quick_reply=QuickReply(
                     items=[
                         QuickReplyButton(
@@ -97,6 +96,7 @@ def callback():
                         ]
                     )
                 )
+                line_bot_api.reply_message(event.reply_token, flex_message)
             elif event.postback.data[0:1] == 'Q':
                 restaurant = event.postback.data[2:]
                 line_bot_api.reply_message(   # 回復「選擇價位類別」按鈕樣板訊息
@@ -170,19 +170,19 @@ def callback():
                             text='請選擇評價限制',
                             actions=[
                                 PostbackTemplateAction(  # 將第一、二步驟選擇的餐廳，包含在第三步驟的資料中
-                                    label='3.5星以上',
-                                    text='簡簡單單',
-                                    data='D&' + shoptype + '&' + pricechoice + '&3.5星以上'
-                                ),
-                                PostbackTemplateAction(
                                     label='4星以上',
-                                    text='來間好一點的',
+                                    text='簡簡單單',
                                     data='D&' + shoptype + '&' + pricechoice + '&4星以上'
                                 ),
                                 PostbackTemplateAction(
                                     label='4.5星以上',
                                     text='真嚴格',
                                     data='D&' + shoptype + '&' + pricechoice + '&4.5星以上'
+                                ),
+                                PostbackTemplateAction(
+                                    label='隨機',
+                                    text='都行',
+                                    data='D&' + shoptype + '&' + pricechoice + '隨機'
                                 )
                             ]
                         )
