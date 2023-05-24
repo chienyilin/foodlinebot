@@ -137,19 +137,19 @@ def callback():
                             text='請選擇評價限制',
                             actions=[
                                 PostbackTemplateAction(  # 將第一、二步驟選擇的餐廳，包含在第三步驟的資料中
-                                    label='3.5星以上',
-                                    text='簡簡單單',
-                                    data='D&' + shoptype + '&3.5星以上'
-                                ),
-                                PostbackTemplateAction(
                                     label='4星以上',
-                                    text='來間好一點的',
+                                    text='簡簡單單',
                                     data='D&' + shoptype + '&4星以上'
                                 ),
                                 PostbackTemplateAction(
                                     label='4.5星以上',
                                     text='真嚴格',
                                     data='D&' + shoptype + '&4.5星以上'
+                                ),
+                                PostbackTemplateAction(
+                                    label='隨機',
+                                    text='都行',
+                                    data='D&' + shoptype + '&隨機'
                                 )
                             ]
                         )
@@ -172,17 +172,17 @@ def callback():
                                 PostbackTemplateAction(  # 將第一、二步驟選擇的餐廳，包含在第三步驟的資料中
                                     label='4星以上',
                                     text='簡簡單單',
-                                    data='D&' + shoptype + '&' + pricechoice + '&4星以上'
+                                    data='D&' + restaurant + '&' + pricechoice + '&4星以上'
                                 ),
                                 PostbackTemplateAction(
                                     label='4.5星以上',
                                     text='真嚴格',
-                                    data='D&' + shoptype + '&' + pricechoice + '&4.5星以上'
+                                    data='D&' + restaurant + '&' + pricechoice + '&4.5星以上'
                                 ),
                                 PostbackTemplateAction(
                                     label='隨機',
                                     text='都行',
-                                    data='D&' + shoptype + '&' + pricechoice + '隨機'
+                                    data='D&' + restaurant + '&' + pricechoice + '隨機'
                                 )
                             ]
                         )
