@@ -92,7 +92,7 @@ def callback():
                 df_shuffled = df.sample(frac=1)
                 random_output = df_shuffled.iloc[:3]  # 直接选择前三行
                 random_output['餐廳名稱'] = random_output['類型'] + random_output['餐廳']
-                output = random_output[['餐廳名稱', '店名', '地址', '連結']]
+                output = random_output[['餐廳名稱','店名','地址','連結']]
                 o_string = output.to_string(index=False, header=False)
                 output_lines = [line.strip() for line in o_string.split('\n')]
                 output_string = '\n'.join(output_lines)
@@ -222,6 +222,7 @@ def callback():
                 )
             elif event.postback.data[0:1] == "E":
                 result = event.postback.data.split('&')
+                df_shuffled = df.sample(frac=1)
                 select=df_shuffled['類型']==result[1]
                 select1 = pd.to_numeric(df_shuffled['評價'], errors='coerce') >= float(result[3])
                 select2=df_shuffled['價位']==result[2]
@@ -247,6 +248,7 @@ def callback():
                     )
             elif event.postback.data[0:1] == "D":
                 result = event.postback.data.split('&')
+                df_shuffled = df.sample(frac=1)
                 select=df_shuffled['類型']==result[1]
                 select1 = pd.to_numeric(df_shuffled['評價'], errors='coerce') >= float(result[2])
                 selected_rows = df_shuffled[select & select1]
