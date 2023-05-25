@@ -128,17 +128,17 @@ def callback():
                                 PostbackTemplateAction(  # 將第一步驟選擇的餐廳，包含在第二步驟的資料中
                                     label='$0~$150',
                                     text='低價位',
-                                    data='C&' + restaurant + '&低價位'
+                                    data='C&' + restaurant + '&$'
                                 ),
                                 PostbackTemplateAction(
                                     label='$150-$300',
                                     text='中價位',
-                                    data='C&' + restaurant + '&中價位'
+                                    data='C&' + restaurant + '&$$'
                                 ),
                                 PostbackTemplateAction(
                                     label='$300以上',
                                     text='高價位',
-                                    data='C&' + restaurant + '&高價位'
+                                    data='C&' + restaurant + '&$$$'
                                 )
                             ]
                         )
@@ -176,9 +176,10 @@ def callback():
             elif event.postback.data[0:1] == "C":
                 if '早午餐' in event.postback.data:
                     restaurant = event.postback.data[2:5]
+                    pricechoice = event.postback.data[5:]
                 else:
                     restaurant = event.postback.data[2:4]
-                pricechoice = event.postback.data[-3:]
+                    pricechoice = event.postback.data[4:]
                 line_bot_api.reply_message(   # 回復「選擇評價類別」按鈕樣板訊息
                     event.reply_token,
                     TemplateSendMessage(
@@ -225,13 +226,12 @@ def callback():
                     output = random_output[['店名','地址', '連結']]
                 line_bot_api.reply_message(  # 回復訊息文字
                         event.reply_token,
-                        # 爬取該地區正在營業，且符合所選擇的美食類別的前五大最高人氣餐廳
                         TextSendMessage(text=output)
                     )
             elif event.postback.data[0:1] == "D":
                 result = event.postback.data.split('&')
                 select=df_shuffled['類型']==result[1]
-                select1 = pd.to_numeric(df_shuffled['評價'], errors='coerce') >= float([2])
+                select1 = pd.to_numeric(df_shuffled['評價'], errors='coerce') >= float(result[2])
                 selected_rows = df_shuffled[select & select1]
                 
                 if len(selected_rows) >= 5:
