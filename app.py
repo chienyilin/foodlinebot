@@ -27,7 +27,7 @@ wks = sht[0]
 df = pd.DataFrame(wks.get_all_records())
 column_names = df.columns
 # 隨機打亂表格的順序，讓每次隨機都不一樣
-df_shuffled = df.sample(frac=1)  
+#df_shuffled = df.sample(frac=1)  
 ###################################################
 
 # 必須放上自己的Channel Access Token
@@ -55,7 +55,7 @@ def callback():
     for event in events:
         if isinstance(event, MessageEvent):
             message = event.message.text
-            if message == "哈囉":
+            if message == "吃什麼好呢":
                 line_bot_api.reply_message(
                     event.reply_token,
                     TemplateSendMessage(
@@ -88,17 +88,19 @@ def callback():
                         )
                     )
                 )
-            elif message == '你好':
+            elif message == '自動推薦':
+                df_shuffled = df.sample(frac=1)
                 random_output = df_shuffled.iloc[:3]  # 直接选择前三行
                 random_output['餐廳名稱'] = random_output['類型'] + random_output['餐廳']
-                output = random_output[['餐廳名稱', '店名', '地址', '連結']] 
-                o_string = output.to_string(index=False,header=False)
-                output_string = '\n'.join(o_string.split('\n'))
+                output = random_output[['餐廳名稱', '店名', '地址', '連結']]
+                o_string = output.to_string(index=False, header=False)
+                output_lines = [line.strip() for line in o_string.split('\n')]
+                output_string = '\n'.join(output_lines)
                 line_bot_api.reply_message(
                     event.reply_token,
                     TextSendMessage(text=output_string)
                 )
-                
+
         elif isinstance(event,PostbackEvent):
             if event.postback.data[0:1] == 'A':
                 flex_message=TextSendMessage(text="選擇你想要的餐廳類型",
@@ -178,7 +180,7 @@ def callback():
                                 PostbackTemplateAction(
                                     label='隨機',
                                     text='都行',
-                                    data='D&' + shoptype + '&隨機'
+                                    data='D&' + shoptype + '&0'
                                 )
                             ]
                         )
@@ -212,7 +214,7 @@ def callback():
                                 PostbackTemplateAction(
                                     label='隨機',
                                     text='都行',
-                                    data='E&' + restaurant + '&' + pricechoice + '&隨機'
+                                    data='E&' + restaurant + '&' + pricechoice + '&0'
                                 )
                             ]
                         )
