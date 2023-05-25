@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "genuine-ether-387701",
+  "private_key_id": "24a570f195baf28eb530669453b886d4c7257314",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDULN/bP7D0uTkB\nwzqYPXLM6A3paqAt655yccDELhdzwdKY5H4YGAQBw0aDAbAOUaEliNP+V9bLFnHP\nRHRXu1aysohOF2VuT+O5RheOJd83hxeE3isYwxUGeOk/Ro6Fdg0UJqp5las94rb8\ndVYQZmGFRsqpiM4iRpcaCGNeNR0Z8teEY4qhAjyHARURTNy57wYPikYCNa7wFJEw\nOZIDMmGNvvRDgzN/x5yTtNtJ5jhgSN3TWwhm+CppRvPMF0ETkKDu1YVwqiHxntV6\nf4/iMn4uauYIcQRTdaMp01LvE0WsKNabILNAcfrvvyabfaURXqj2dZL36jkcyqnA\nt40zHgyNAgMBAAECggEABHL5cblE7mjI5XzQyHr3Yo0WJ5gdCkF31doFSwfVZY/B\nqQOXkk1Enj3YR2x8Ytx61tTm7x0r65/JnKlIkENlJsOgIJUUgyrpMUwjN8+a/ejX\nCSn4eOE0WmmkKHfECs/mJ89EwV5uVBKiOCqEtrzS3C7XFpWADw9wYTMeVE4kUVQw\nuCAleW8lZ0H5ZDfNUJjtJd/r5swtCqk9b3G3T5aBvbIV+j/MzpVXlaDxwo2xCVv2\niGruYYogdUC7qrJ1S2PUAMU55PhLI9BGW2+9kmaRZoTdlJZ9JCvi0e1WUmzUdKgS\nRx7xid2D8m31uXjoN9iLJqjF1iGm1fNFgq7EcgXeqQKBgQD/3Lv0r8GUfoAnd8D9\nOcknUHxo9WnZJb/fZERIx3BQOiueluNve4nK6Vcytn2m5jn7QQqM+Pl+1zAhXm4c\nkDD0YIGsHC4ABT5VRfjKSfTKJK/NruuZ9eFk4/7nd/Zir1mfAM2DkYF7jZiIrY/G\nVdS0O1X6OHF6as9nEqFSRDRv6QKBgQDUSh5qeg4oQr1xRDFJX/gXgbUYM2OXydAK\n8hJMe7vb6yY7w9uZSUc92uMmvJYNHOqgXrh3PmXfJaL3+jwfL5HlugPPO/QgCmJs\nytbHbmTz9q4tLPCgIAHfZWwN/srCBJTsNyJlmfj2PhNmqZXQzq1loKOIX3HbyHSJ\nzWCUe0PVBQKBgEYyDO7oeTeALTCmzi+q9uDuV/ODwPJuROHI5GMDNHEORIFR7Dvd\nrMQamG21W2u6phWklnxuoiSGbRH6kkML3CJvh6PsZ0JiLeO/Oq5k89+xiPnpD4JB\nzwCa/IgMhXA1o2TYF4oNFXUMN9jnpRZI3f5EeSYY7ikjvJsOpWuogqphAoGBALQP\nJdtEKWvmp85Be9hziPdPMe4T8F5Xc5lFF1Y+AOoYenZouoM6jy2c0dwSSudWZn+d\nt7KUf02VG7RfT81XyNTkQMTuYjMm+7KxHRlMvl3bFoMEwhfe7hewa8U3Hn0P68yr\nOwaYYX1iy4vhPUw9cP9pECvkYKt9S7NyOn/WSYONAoGBAJCeNgVS70+jaMoM/0QK\nPTMixPuylXwMqQ9KH8zqMBGOlp56CDk59WZbXpJ/S0Qv1n6W2IC7ifVrAZA53H98\nCsex/knFZ75UccMUJV7i3msz2XPd6Q7FJAnfAIxZ1UF4GedsDyUV1wmRmBaCgR05\nhFvmujtdf7qvOm4k8yNfN1Hx\n-----END PRIVATE KEY-----\n",
+  "client_email": "rebecca-c@genuine-ether-387701.iam.gserviceaccount.com",
+  "client_id": "102076382842825505408",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/rebecca-c%40genuine-ether-387701.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
