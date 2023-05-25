@@ -88,6 +88,15 @@ def callback():
                         )
                     )
                 )
+            elif message == '你好':
+                random_output = df_shuffled.iloc[:5]  # 直接选择前五个行
+                random_output['餐廳名稱'] = random_output['類型'] + random_output['餐廳']
+                output = random_output[['店名', '餐廳名稱', '地址', '連結']] 
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text=output)
+                )
+                
         elif isinstance(event,PostbackEvent):
             if event.postback.data[0:1] == 'A':
                 flex_message=TextSendMessage(text="選擇你想要的餐廳類型",
@@ -219,7 +228,7 @@ def callback():
                     output = random_output[['店名','地址', '連結']]
         
                 elif len(selected_rows)==0:
-                    output="NO DATA FOUND"
+                    output="附近沒有店家符合此條件～～請再試一次"
         
                 else:
                     random_output = selected_rows
@@ -240,7 +249,7 @@ def callback():
                     output = random_output[['店名','地址', '連結']]
                     
                 elif len(selected_rows)==0:
-                    output="NO DATA FOUND"
+                    output="附近沒有店家符合此條件～～請再試一次"
 
                 else:
                     random_output = selected_rows
