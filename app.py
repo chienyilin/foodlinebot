@@ -12,6 +12,24 @@ from linebot.models import *
 import re
 app = Flask(__name__)
 
+#姜
+import pygsheets
+import pandas as pd
+import numpy as np
+import random
+gc = pygsheets.authorize(service_file='./google_python.json')
+sht = gc.open_by_url(
+'https://docs.google.com/spreadsheets/d/1vgEdIDyq72ond0Tch48kNiJ7N_0FmN04dB38bErMLQg/edit?hl=zh-TW#gid=0'
+)
+wks_list = sht.worksheets()
+wks = sht[0]
+#讀取成 df
+df = pd.DataFrame(wks.get_all_records())
+column_names = df.columns
+# 隨機打亂表格的順序，讓每次隨機都不一樣
+df_shuffled = df.sample(frac=1)  
+###################################################
+
 # 必須放上自己的Channel Access Token
 line_bot_api = LineBotApi('5kd4nm3bDWl+WVCow3m0qje706VXFDrsSgB0QiB/ZOB2ZFIj5mXMYm6U6AAdh31+yIOY+sdNl9blhd0qijZl9lB7+W5l7jNZ+kOWbYG8tYDUY3MBk2nMu5nNN1XdfFY7VeAowBCB/GpOmhX8VganBAdB04t89/1O/w1cDnyilFU=')
 # 必須放上自己的Channel Secret
@@ -139,12 +157,12 @@ def callback():
                                 PostbackTemplateAction(  # 將第一、二步驟選擇的餐廳，包含在第三步驟的資料中
                                     label='4星以上',
                                     text='簡簡單單',
-                                    data='D&' + shoptype + '&4星以上'
+                                    data='D&' + shoptype + '&4'
                                 ),
                                 PostbackTemplateAction(
                                     label='4.5星以上',
                                     text='真嚴格',
-                                    data='D&' + shoptype + '&4.5星以上'
+                                    data='D&' + shoptype + '&4.5'
                                 ),
                                 PostbackTemplateAction(
                                     label='隨機',
@@ -172,22 +190,66 @@ def callback():
                                 PostbackTemplateAction(  # 將第一、二步驟選擇的餐廳，包含在第三步驟的資料中
                                     label='4星以上',
                                     text='簡簡單單',
-                                    data='D&' + restaurant + '&' + pricechoice + '&4星以上'
+                                    data='E&' + restaurant + '&' + pricechoice + '&4'
                                 ),
                                 PostbackTemplateAction(
                                     label='4.5星以上',
                                     text='真嚴格',
-                                    data='D&' + restaurant + '&' + pricechoice + '&4.5星以上'
+                                    data='E&' + restaurant + '&' + pricechoice + '&4.5'
                                 ),
                                 PostbackTemplateAction(
                                     label='隨機',
                                     text='都行',
-                                    data='D&' + restaurant + '&' + pricechoice + '隨機'
+                                    data='E&' + restaurant + '&' + pricechoice + '&隨機'
                                 )
                             ]
                         )
                     )
                 )
+            elif event.postback.data[0:1] == "E":
+                result = event.postback.data.split('&')
+                select=df_shuffled['類型']==result[1]
+                select1 = pd.to_numeric(df_shuffled['評價'], errors='coerce') >= float(result[3])
+                select2=df_shuffled['價位']==result[2]
+                selected_rows = df_shuffled[select & select1& select2]
+                if len(selected_rows) >= 5:
+                    random_selection = random.sample(selected_rows.index.tolist(),5)
+                    random_output= selected_rows.loc[random_selection]
+                    output = random_output[['店名','地址', '連結']]
+        
+                elif len(selected_rows)==0:
+                    output="NO DATA FOUND"
+        
+                else:
+                    random_output = selected_rows
+                    output = random_output[['店名','地址', '連結']]
+                line_bot_api.reply_message(  # 回復訊息文字
+                        event.reply_token,
+                        # 爬取該地區正在營業，且符合所選擇的美食類別的前五大最高人氣餐廳
+                        TextSendMessage(text=output)
+                    )
+            elif event.postback.data[0:1] == "D":
+                result = event.postback.data.split('&')
+                select=df_shuffled['類型']==result[1]
+                select1 = pd.to_numeric(df_shuffled['評價'], errors='coerce') >= float([2])
+                selected_rows = df_shuffled[select & select1]
+                
+                if len(selected_rows) >= 5:
+                    random_selection = random.sample(selected_rows.index.tolist(), 5)
+                    random_output = selected_rows.loc[random_selection]
+                    output = random_output[['店名','地址', '連結']]
+                    
+                elif len(selected_rows)==0:
+                    output="NO DATA FOUND"
+
+                else:
+                    random_output = selected_rows
+                    output = random_output[['店名','地址', '連結']]
+                line_bot_api.reply_message(  # 回復訊息文字
+                        event.reply_token,
+                        # 爬取該地區正在營業，且符合所選擇的美食類別的前五大最高人氣餐廳
+                        TextSendMessage(text=output)
+                    )
                 
     return 'ok'          
                 
