@@ -92,7 +92,8 @@ def callback():
                 random_output = df_shuffled.iloc[:5]  # 直接选择前五个行
                 random_output['餐廳名稱'] = random_output['類型'] + random_output['餐廳']
                 output = random_output[['店名', '餐廳名稱', '地址', '連結']] 
-                output_string = output.to_string(index=False)
+                o_string = output.to_string(index=False,header=False)
+                output_string = '\n'.join(o_string.split('\n'))
                 line_bot_api.reply_message(
                     event.reply_token,
                     TextSendMessage(text=output_string)
