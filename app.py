@@ -89,9 +89,9 @@ def callback():
                     )
                 )
             elif message == '你好':
-                random_output = df_shuffled.iloc[:5]  # 直接选择前五个行
+                random_output = df_shuffled.iloc[:3]  # 直接选择前三行
                 random_output['餐廳名稱'] = random_output['類型'] + random_output['餐廳']
-                output = random_output[['店名', '餐廳名稱', '地址', '連結']] 
+                output = random_output[['餐廳名稱', '店名', '地址', '連結']] 
                 o_string = output.to_string(index=False,header=False)
                 output_string = '\n'.join(o_string.split('\n'))
                 line_bot_api.reply_message(
@@ -187,10 +187,10 @@ def callback():
             elif event.postback.data[0:1] == "C":
                 if '早午餐' in event.postback.data:
                     restaurant = event.postback.data[2:5]
-                    pricechoice = event.postback.data[5:]
+                    pricechoice = event.postback.data[6:]
                 else:
                     restaurant = event.postback.data[2:4]
-                    pricechoice = event.postback.data[4:]
+                    pricechoice = event.postback.data[5:]
                 line_bot_api.reply_message(   # 回復「選擇評價類別」按鈕樣板訊息
                     event.reply_token,
                     TemplateSendMessage(
@@ -228,7 +228,8 @@ def callback():
                     random_selection = random.sample(selected_rows.index.tolist(),5)
                     random_output= selected_rows.loc[random_selection]
                     output = random_output[['店名','地址', '連結']]
-                    output_string = output.to_string(index=False)
+                    o_string = output.to_string(index=False,header=False)
+                    output_string = '\n'.join(o_string.split('\n'))
         
                 elif len(selected_rows)==0:
                     output_string="附近沒有店家符合此條件～～請再試一次"
@@ -236,7 +237,8 @@ def callback():
                 else:
                     random_output = selected_rows
                     output = random_output[['店名','地址', '連結']]
-                    output_string = output.to_string(index=False)
+                    o_string = output.to_string(index=False,header=False)
+                    output_string = '\n'.join(o_string.split('\n'))
                 line_bot_api.reply_message(  # 回復訊息文字
                         event.reply_token,
                         TextSendMessage(text=output_string)
@@ -251,7 +253,8 @@ def callback():
                     random_selection = random.sample(selected_rows.index.tolist(), 5)
                     random_output = selected_rows.loc[random_selection]
                     output = random_output[['店名','地址', '連結']]
-                    output_string = output.to_string(index=False)
+                    o_string = output.to_string(index=False,header=False)
+                    output_string = '\n'.join(o_string.split('\n'))
                     
                 elif len(selected_rows)==0:
                     output_string="附近沒有店家符合此條件～～請再試一次"
@@ -259,7 +262,8 @@ def callback():
                 else:
                     random_output = selected_rows
                     output = random_output[['店名','地址', '連結']]
-                    output_string = output.to_string(index=False)
+                    o_string = output.to_string(index=False,header=False)
+                    output_string = '\n'.join(o_string.split('\n'))
                 line_bot_api.reply_message(  # 回復訊息文字
                         event.reply_token,
                         # 爬取該地區正在營業，且符合所選擇的美食類別的前五大最高人氣餐廳
