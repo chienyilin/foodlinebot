@@ -34,9 +34,8 @@ column_names = df.columns
 line_bot_api = LineBotApi('5kd4nm3bDWl+WVCow3m0qje706VXFDrsSgB0QiB/ZOB2ZFIj5mXMYm6U6AAdh31+yIOY+sdNl9blhd0qijZl9lB7+W5l7jNZ+kOWbYG8tYDUY3MBk2nMu5nNN1XdfFY7VeAowBCB/GpOmhX8VganBAdB04t89/1O/w1cDnyilFU=')
 # 必須放上自己的Channel Secret
 parser = WebhookParser('1441b0c3a47a16b4205287848d9daa91')
-
-#line_bot_api.push_message('U26e6062efb6aacd3b61e235ce67a0587', TextSendMessage(text='你可以開始了'))
-
+# push message
+line_bot_api.push_message('U26e6062efb6aacd3b61e235ce67a0587', TextSendMessage(text='輸入「吃什麼好呢」以啟動篩選店家功能 ; 輸入「自動推薦」隨機推薦您三家店家'))
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -93,6 +92,7 @@ def callback():
                 random_output = df_shuffled.iloc[:3]  # 直接选择前三行
                 random_output['餐廳名稱'] = random_output['類型'] + random_output['餐廳']
                 output = random_output[['餐廳名稱','店名','地址','連結']]
+                output = output.applymap(str.strip)  # 去除每个字段的额外空格
                 o_string = output.to_string(index=False, header=False)
                 output_lines = [line.strip() for line in o_string.split('\n')]
                 output_string = '\n'.join(output_lines)
@@ -222,7 +222,7 @@ def callback():
                 )
             elif event.postback.data[0:1] == "E":
                 result = event.postback.data.split('&')
-                df_shuffled = df.sample(frac=1)
+                
                 select=df_shuffled['類型']==result[1]
                 select1 = pd.to_numeric(df_shuffled['評價'], errors='coerce') >= float(result[3])
                 select2=df_shuffled['價位']==result[2]
@@ -231,8 +231,10 @@ def callback():
                     random_selection = random.sample(selected_rows.index.tolist(),5)
                     random_output= selected_rows.loc[random_selection]
                     output = random_output[['店名','地址', '連結']]
-                    o_string = output.to_string(index=False,header=False)
-                    output_string = '\n'.join(o_string.split('\n'))
+                    output = output.applymap(str.strip)  # 去除每个字段的额外空格
+                    o_string = output.to_string(index=False, header=False)
+                    output_lines = [line.strip() for line in o_string.split('\n')]
+                    output_string = '\n'.join(output_lines)
         
                 elif len(selected_rows)==0:
                     output_string="附近沒有店家符合此條件～～請再試一次"
@@ -240,8 +242,10 @@ def callback():
                 else:
                     random_output = selected_rows
                     output = random_output[['店名','地址', '連結']]
-                    o_string = output.to_string(index=False,header=False)
-                    output_string = '\n'.join(o_string.split('\n'))
+                    output = output.applymap(str.strip)  # 去除每个字段的额外空格
+                    o_string = output.to_string(index=False, header=False)
+                    output_lines = [line.strip() for line in o_string.split('\n')]
+                    output_string = '\n'.join(output_lines)
                 line_bot_api.reply_message(  # 回復訊息文字
                         event.reply_token,
                         TextSendMessage(text=output_string)
@@ -257,8 +261,10 @@ def callback():
                     random_selection = random.sample(selected_rows.index.tolist(), 5)
                     random_output = selected_rows.loc[random_selection]
                     output = random_output[['店名','地址', '連結']]
-                    o_string = output.to_string(index=False,header=False)
-                    output_string = '\n'.join(o_string.split('\n'))
+                    output = output.applymap(str.strip)  # 去除每个字段的额外空格
+                    o_string = output.to_string(index=False, header=False)
+                    output_lines = [line.strip() for line in o_string.split('\n')]
+                    output_string = '\n'.join(output_lines)
                     
                 elif len(selected_rows)==0:
                     output_string="附近沒有店家符合此條件～～請再試一次"
@@ -266,8 +272,10 @@ def callback():
                 else:
                     random_output = selected_rows
                     output = random_output[['店名','地址', '連結']]
-                    o_string = output.to_string(index=False,header=False)
-                    output_string = '\n'.join(o_string.split('\n'))
+                    output = output.applymap(str.strip)  # 去除每个字段的额外空格
+                    o_string = output.to_string(index=False, header=False)
+                    output_lines = [line.strip() for line in o_string.split('\n')]
+                    output_string = '\n'.join(output_lines)
                 line_bot_api.reply_message(  # 回復訊息文字
                         event.reply_token,
                         # 爬取該地區正在營業，且符合所選擇的美食類別的前五大最高人氣餐廳
