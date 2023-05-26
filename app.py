@@ -35,12 +35,11 @@ line_bot_api = LineBotApi('5kd4nm3bDWl+WVCow3m0qje706VXFDrsSgB0QiB/ZOB2ZFIj5mXMY
 # 必須放上自己的Channel Secret
 parser = WebhookParser('1441b0c3a47a16b4205287848d9daa91')
 
+# push message
+line_bot_api.push_message('U26e6062efb6aacd3b61e235ce67a0587', TextSendMessage(text='輸入「吃什麼好呢」以啟動篩選店家功能 ; 輸入「自動推薦」隨機推薦您三家店家'))
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
-    # push message
-    line_bot_api.push_message('U26e6062efb6aacd3b61e235ce67a0587', TextSendMessage(text='輸入「吃什麼好呢」以啟動篩選店家功能 ; 輸入「自動推薦」隨機推薦您三家店家'))
-    
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
