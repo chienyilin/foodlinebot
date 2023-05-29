@@ -42,13 +42,13 @@ line_bot_api.push_message('U26e6062efb6aacd3b61e235ce67a0587', TextSendMessage(t
 @app.route("/callback", methods=['POST'])
 def callback():
     rich_menu_to_create = RichMenu(
-        size=RichMenuSize(width=1780, height=600),
+        size=RichMenuSize(width=1200, height=405),
         selected=True, #當使用者加入linebot或重設linebot時，會顯示這個 Rich Menu
         name='快點啦', 
         chat_bar_text='Tap here', #設定 Rich Menu 上方的聊天視窗顯示的文字，這裡設定為 "Tap here"。
         areas=[ #建立 Rich Menu 的按鈕區域列表
             RichMenuArea(#自動推薦
-                bounds=RichMenuBounds(x=0, y=0, width=890, height=600),
+                bounds=RichMenuBounds(x=0, y=0, width=600, height=405),
                 action=TemplateSendMessage(
                         alt_text='Buttons template',
                         template=ButtonsTemplate(
@@ -75,33 +75,28 @@ def callback():
                     )
             ),
             RichMenuArea(#挑選餐廳
-                bounds=RichMenuBounds(x=890, y=0, width=890, height=600),
+                bounds=RichMenuBounds(x=600, y=0, width=600, height=405),
                 action=TemplateSendMessage(
                         alt_text='Buttons template',
                         template=ButtonsTemplate(
-                            title='Category',
-                            text='請選擇美食分類',
+                            title='Area',
+                            text='請選擇所在台大區域',
                             actions=[
                                 PostbackTemplateAction(
-                                    label='餐廳',
-                                    text='餐廳',
-                                    data='A&餐廳'
+                                    label='公館',
+                                    text='公館',
+                                    data='X&餐廳'
                                 ),
                                 PostbackTemplateAction(
-                                    label='飲料店',
-                                    text='飲料店',
-                                    data='B&飲料店'
+                                    label='新生南',
+                                    text='新生南',
+                                    data='X&新生南'
                                 ),
                                 PostbackTemplateAction(
-                                    label='咖啡廳',
-                                    text='咖啡廳',
-                                    data='B&咖啡廳'
+                                    label='118',
+                                    text='118',
+                                    data='X&118'
                                 ),
-                                PostbackTemplateAction(
-                                    label='酒吧',
-                                    text='酒吧',
-                                    data='B&酒吧'
-                                )
                             ]
                         )
                     )
@@ -110,7 +105,7 @@ def callback():
     )   
     rich_menu_id = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create) #建立rich menu並取得rich menu的id
     # 上傳 Rich Menu 的圖片
-    url = 'https://drive.google.com/file/d/1SOEXFjeORXADE7lG2MGOTTbcRjwnLm2J/view?usp=sharing'
+    url = 'https://drive.google.com/file/d/1G0xHLsLe79dTxTVuSLG3RvHzMGQpKENq/view?usp=sharing'
     line_bot_api.set_rich_menu_image(rich_menu_id, 'image/jpg', url)
 
     # 將 Rich Menu 指派給預設使用者（所有使用者在與此 Line Bot互動時都會看到並使用該 Rich Menu）
@@ -143,7 +138,41 @@ def callback():
                         event.reply_token,
                         TextSendMessage(text=output_string)
                     )
-                
+            
+            elif event.postback.data[0:1] == 'X':
+                area=event.postbackdata[2:]
+                line_bot_api.reply_message(   # 回復「選擇價位類別」按鈕樣板訊息
+                    event.reply_token,
+                    TemplateSendMessage(
+                        alt_text='Buttons template',
+                        template=ButtonsTemplate(
+                            title='Category',
+                            text='請選擇美食分類',
+                            actions=[
+                                PostbackTemplateAction(
+                                    label='餐廳',
+                                    text='餐廳',
+                                    data='A&餐廳'+'&'+ area
+                                ),
+                                PostbackTemplateAction(
+                                    label='飲料店',
+                                    text='飲料店',
+                                    data='B&飲料店'+'&'+ area
+                                ),
+                                PostbackTemplateAction(
+                                    label='咖啡廳',
+                                    text='咖啡廳',
+                                    data='B&咖啡廳'+'&'+ area
+                                ),
+                                PostbackTemplateAction(
+                                    label='酒吧',
+                                    text='酒吧',
+                                    data='B&酒吧'+'&'+ area
+                                )
+                            ]
+                        )
+                    )
+                )
             elif event.postback.data[0:1] == 'A':
                 flex_message=TextSendMessage(text="選擇你想要的餐廳類型",
                 quick_reply=QuickReply(
