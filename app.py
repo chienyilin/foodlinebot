@@ -42,7 +42,7 @@ line_bot_api.push_message('U26e6062efb6aacd3b61e235ce67a0587', TextSendMessage(t
 @app.route("/callback", methods=['POST'])
 def callback():
     rich_menu_to_create = RichMenu(
-        size=RichMenuSize(width=2500, height=1686),
+        size=RichMenuSize(width=1780, height=600),
         selected=True, #當使用者加入linebot或重設linebot時，會顯示這個 Rich Menu
         name='快點啦', 
         chat_bar_text='Tap here', #設定 Rich Menu 上方的聊天視窗顯示的文字，這裡設定為 "Tap here"。
