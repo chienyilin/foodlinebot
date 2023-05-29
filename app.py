@@ -46,69 +46,19 @@ def callback():
         selected=True, #當使用者加入linebot或重設linebot時，會顯示這個 Rich Menu
         name='快點啦', 
         chat_bar_text='Tap here', #設定 Rich Menu 上方的聊天視窗顯示的文字，這裡設定為 "Tap here"。
-        areas=[ #建立 Rich Menu 的按鈕區域列表
-            RichMenuArea(#自動推薦
-                bounds=RichMenuBounds(x=0, y=0, width=600, height=405),
-                action=TemplateSendMessage(
-                        alt_text='Buttons template',
-                        template=ButtonsTemplate(
-                            title='Area',
-                            text='請選擇所在台大區域',
-                            actions=[
-                                PostbackTemplateAction(
-                                    label='公館',
-                                    text='公館',
-                                    data='Z&餐廳'
-                                ),
-                                PostbackTemplateAction(
-                                    label='新生南',
-                                    text='新生南',
-                                    data='Z&新生南'
-                                ),
-                                PostbackTemplateAction(
-                                    label='118',
-                                    text='118',
-                                    data='Z&118'
-                                ),
-                            ]
-                        )
-                    )
+        areas=[
+            RichMenuArea(
+                bounds=RichMenuBounds(x=0, y=0, width=1250, height=843),
+                action=MessageAction(text='按鈕1')
             ),
-            RichMenuArea(#挑選餐廳
-                bounds=RichMenuBounds(x=600, y=0, width=600, height=405),
-                action=TemplateSendMessage(
-                        alt_text='Buttons template',
-                        template=ButtonsTemplate(
-                            title='Area',
-                            text='請選擇所在台大區域',
-                            actions=[
-                                PostbackTemplateAction(
-                                    label='公館',
-                                    text='公館',
-                                    data='X&餐廳'
-                                ),
-                                PostbackTemplateAction(
-                                    label='新生南',
-                                    text='新生南',
-                                    data='X&新生南'
-                                ),
-                                PostbackTemplateAction(
-                                    label='118',
-                                    text='118',
-                                    data='X&118'
-                                ),
-                            ]
-                        )
-                    )
+            RichMenuArea(
+                bounds=RichMenuBounds(x=1250, y=0, width=1250, height=843),
+                action=MessageAction(text='按鈕2')
             )
         ]
-    )   
+    )
     rich_menu_response = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create) #建立rich menu並取得rich menu的id
     rich_menu_id = rich_menu_response['richMenuId']
-    
-    # 上傳 Rich Menu 的圖片
-    url = 'https://drive.google.com/file/d/1G0xHLsLe79dTxTVuSLG3RvHzMGQpKENq/view?usp=sharing'
-    line_bot_api.set_rich_menu_image(rich_menu_id, 'image/jpg', url)
 
     # 將 Rich Menu 指派給預設使用者（所有使用者在與此 Line Bot互動時都會看到並使用該 Rich Menu）
     line_bot_api.set_default_rich_menu(rich_menu_id)
