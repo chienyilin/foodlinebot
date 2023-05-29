@@ -37,28 +37,46 @@ parser = WebhookParser('1441b0c3a47a16b4205287848d9daa91')
 
 # push message
 line_bot_api.push_message('U26e6062efb6aacd3b61e235ce67a0587', TextSendMessage(text='輸入「吃什麼好呢」以啟動篩選店家功能 ; 輸入「自動推薦」隨機推薦您三家店家'))
+
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
-    # get X-Line-Signature header value
-    signature = request.headers['X-Line-Signature']
-
-    # get request body as text
-    body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
-
-    # handle webhook body
-    try:
-        events = parser.parse(body, signature)
-    except InvalidSignatureError:
-        abort(400)
-    for event in events:
-        if isinstance(event, MessageEvent):
-            message = event.message.text
-            if message == "吃什麼好呢":
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    TemplateSendMessage(
+    rich_menu_to_create = RichMenu(
+        size=RichMenuSize(width=2500, height=1686),
+        selected=True, #當使用者加入linebot或重設linebot時，會顯示這個 Rich Menu
+        name='快點啦', 
+        chat_bar_text='Tap here', #設定 Rich Menu 上方的聊天視窗顯示的文字，這裡設定為 "Tap here"。
+        areas=[ #建立 Rich Menu 的按鈕區域列表
+            RichMenuArea(#自動推薦
+                bounds=RichMenuBounds(x=0, y=0, width=890, height=600),
+                action=TemplateSendMessage(
+                        alt_text='Buttons template',
+                        template=ButtonsTemplate(
+                            title='Area',
+                            text='請選擇所在台大區域',
+                            actions=[
+                                PostbackTemplateAction(
+                                    label='公館',
+                                    text='公館',
+                                    data='Z&餐廳'
+                                ),
+                                PostbackTemplateAction(
+                                    label='新生南',
+                                    text='新生南',
+                                    data='Z&新生南'
+                                ),
+                                PostbackTemplateAction(
+                                    label='118',
+                                    text='118',
+                                    data='Z&118'
+                                ),
+                            ]
+                        )
+                    )
+            ),
+            RichMenuArea(#挑選餐廳
+                bounds=RichMenuBounds(x=890, y=0, width=890, height=600),
+                action=TemplateSendMessage(
                         alt_text='Buttons template',
                         template=ButtonsTemplate(
                             title='Category',
@@ -87,23 +105,46 @@ def callback():
                             ]
                         )
                     )
-                )
-            elif message == '自動推薦':
-                df_shuffled = df.sample(frac=1)
-                random_output = df_shuffled.iloc[:3]  # 直接选择前三行
+            )
+        ]
+    )   
+    rich_menu_id = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create) #建立rich menu並取得rich menu的id
+    # 上傳 Rich Menu 的圖片
+    url = 'https://drive.google.com/file/d/1SOEXFjeORXADE7lG2MGOTTbcRjwnLm2J/view?usp=sharing'
+    line_bot_api.set_rich_menu_image(rich_menu_id, 'image/jpg', url)
+
+    # 將 Rich Menu 指派給預設使用者（所有使用者在與此 Line Bot互動時都會看到並使用該 Rich Menu）
+    line_bot_api.set_default_rich_menu(rich_menu_id)
+    
+    # get X-Line-Signature header value
+    signature = request.headers['X-Line-Signature']
+
+    # get request body as text
+    body = request.get_data(as_text=True)
+    app.logger.info("Request body: " + body)
+
+    # handle webhook body
+    try:
+        events = parser.parse(body, signature)
+    except InvalidSignatureError:
+        abort(400)
+    for event in events:
+        if isinstance(event,PostbackEvent):
+            if event.postback.data[0:1] == 'Z':
+                df_shuffled = df.sample(frac=1),
+                random_output = df_shuffled.iloc[:3] # 直接选择前三行
                 random_output['餐廳名稱'] = random_output['類型'] + random_output['餐廳']
                 output = random_output[['餐廳名稱','店名','地址','連結']]
                 output = output.applymap(str.strip)  # 去除每个字段的额外空格
                 o_string = output.to_string(index=False, header=False)
                 output_lines = [line.strip() for line in o_string.split('\n')]
                 output_string = '\n'.join(output_lines)
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    TextSendMessage(text=output_string)
-                )
-
-        elif isinstance(event,PostbackEvent):
-            if event.postback.data[0:1] == 'A':
+                line_bot_api.reply_message(  # 回復訊息文字
+                        event.reply_token,
+                        TextSendMessage(text=output_string)
+                    )
+                
+            elif event.postback.data[0:1] == 'A':
                 flex_message=TextSendMessage(text="選擇你想要的餐廳類型",
                 quick_reply=QuickReply(
                     items=[
