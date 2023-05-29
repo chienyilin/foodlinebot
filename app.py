@@ -36,7 +36,7 @@ line_bot_api = LineBotApi('5kd4nm3bDWl+WVCow3m0qje706VXFDrsSgB0QiB/ZOB2ZFIj5mXMY
 parser = WebhookParser('1441b0c3a47a16b4205287848d9daa91')
 
 # push message
-#line_bot_api.push_message('U26e6062efb6aacd3b61e235ce67a0587', TextSendMessage(text='輸入「吃什麼好呢」以啟動篩選店家功能 ; 輸入「自動推薦」隨機推薦您三家店家'))
+line_bot_api.push_message('U26e6062efb6aacd3b61e235ce67a0587', TextSendMessage(text='輸入「吃什麼好呢」以啟動篩選店家功能 ; 輸入「自動推薦」隨機推薦您三家店家'))
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -103,10 +103,12 @@ def callback():
             )
         ]
     )   
-    rich_menu_id = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create) #建立rich menu並取得rich menu的id
+    rich_menu_response = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create) #建立rich menu並取得rich menu的id
+    rich_menu_id = rich_menu_response['richMenuId']
+    
     # 上傳 Rich Menu 的圖片
     url = 'https://drive.google.com/file/d/1G0xHLsLe79dTxTVuSLG3RvHzMGQpKENq/view?usp=sharing'
-    line_bot_api.set_rich_menu_image(rich_menu_id, 'image/jpeg', url)
+    line_bot_api.set_rich_menu_image(rich_menu_id, 'image/jpg', url)
 
     # 將 Rich Menu 指派給預設使用者（所有使用者在與此 Line Bot互動時都會看到並使用該 Rich Menu）
     line_bot_api.set_default_rich_menu(rich_menu_id)
