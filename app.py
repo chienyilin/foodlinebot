@@ -46,11 +46,11 @@ rich_menu_to_create = RichMenu(
     areas=[
         RichMenuArea(
             bounds=RichMenuBounds(x=0, y=0, width=600, height=405),
-            action=MessageAction(text='按鈕1')
+            action=MessageAction(text='自動推薦')
         ),
         RichMenuArea(
             bounds=RichMenuBounds(x=600, y=0, width=600, height=405),
-            action=MessageAction(text='按鈕2')
+            action=MessageAction(text='吃什麼好呢')
         )
     ]
 )
@@ -78,24 +78,10 @@ def callback():
     except InvalidSignatureError:
         abort(400)
     for event in events:
-        if isinstance(event,PostbackEvent):
-            if event.postback.data[0:1] == 'Z':
-                df_shuffled = df.sample(frac=1),
-                random_output = df_shuffled.iloc[:3] # 直接选择前三行
-                random_output['餐廳名稱'] = random_output['類型'] + random_output['餐廳']
-                output = random_output[['餐廳名稱','店名','地址','連結']]
-                output = output.applymap(str.strip)  # 去除每个字段的额外空格
-                o_string = output.to_string(index=False, header=False)
-                output_lines = [line.strip() for line in o_string.split('\n')]
-                output_string = '\n'.join(output_lines)
-                line_bot_api.reply_message(  # 回復訊息文字
-                        event.reply_token,
-                        TextSendMessage(text=output_string)
-                    )
-            
-            elif event.postback.data[0:1] == 'X':
-                area=event.postbackdata[2:]
-                line_bot_api.reply_message(   # 回復「選擇價位類別」按鈕樣板訊息
+        if isinstance(event, MessageEvent):
+            message = event.message.text
+            if message == "吃什麼好呢":
+                line_bot_api.reply_message(
                     event.reply_token,
                     TemplateSendMessage(
                         alt_text='Buttons template',
@@ -106,28 +92,43 @@ def callback():
                                 PostbackTemplateAction(
                                     label='餐廳',
                                     text='餐廳',
-                                    data='A&餐廳'+'&'+ area
+                                    data='A&餐廳'
                                 ),
                                 PostbackTemplateAction(
                                     label='飲料店',
                                     text='飲料店',
-                                    data='B&飲料店'+'&'+ area
+                                    data='B&飲料店'
                                 ),
                                 PostbackTemplateAction(
                                     label='咖啡廳',
                                     text='咖啡廳',
-                                    data='B&咖啡廳'+'&'+ area
+                                    data='B&咖啡廳'
                                 ),
                                 PostbackTemplateAction(
                                     label='酒吧',
                                     text='酒吧',
-                                    data='B&酒吧'+'&'+ area
+                                    data='B&酒吧'
                                 )
                             ]
                         )
                     )
                 )
-            elif event.postback.data[0:1] == 'A':
+            elif message == '自動推薦':
+                df_shuffled = df.sample(frac=1)
+                random_output = df_shuffled.iloc[:3]  # 直接选择前三行
+                random_output['餐廳名稱'] = random_output['類型'] + random_output['餐廳']
+                output = random_output[['餐廳名稱','店名','地址','連結']]
+                output = output.applymap(str.strip)  # 去除每个字段的额外空格
+                o_string = output.to_string(index=False, header=False)
+                output_lines = [line.strip() for line in o_string.split('\n')]
+                output_string = '\n'.join(output_lines)
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text=output_string)
+                )
+
+        elif isinstance(event,PostbackEvent):
+            if event.postback.data[0:1] == 'A':
                 flex_message=TextSendMessage(text="選擇你想要的餐廳類型",
                 quick_reply=QuickReply(
                     items=[
