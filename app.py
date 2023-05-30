@@ -300,8 +300,8 @@ def callback():
                     TemplateSendMessage(
                         alt_text='Buttons template',
                         template=ButtonsTemplate(
-                            title='reviews',
-                            text='請選擇評價限制',
+                            title='area',
+                            text='請選擇店家所在區域',
                             actions=[
                                 PostbackTemplateAction(  # 將第一、二步驟選擇的餐廳，包含在第三步驟的資料中
                                     label='公館',
