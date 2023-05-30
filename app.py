@@ -36,33 +36,33 @@ line_bot_api = LineBotApi('5kd4nm3bDWl+WVCow3m0qje706VXFDrsSgB0QiB/ZOB2ZFIj5mXMY
 parser = WebhookParser('1441b0c3a47a16b4205287848d9daa91')
 
 # push message
-line_bot_api.push_message('U26e6062efb6aacd3b61e235ce67a0587', TextSendMessage(text='輸入「吃什麼好呢」以啟動篩選店家功能 ; 輸入「自動推薦」隨機推薦您三家店家'))
+#line_bot_api.push_message('U26e6062efb6aacd3b61e235ce67a0587', TextSendMessage(text='輸入「吃什麼好呢」以啟動篩選店家功能 ; 輸入「自動推薦」隨機推薦您三家店家'))
+
+rich_menu_to_create = RichMenu(
+    size=RichMenuSize(width=1200, height=405),
+    selected=True, #當使用者加入linebot或重設linebot時，會顯示這個 Rich Menu
+    name='快點啦', 
+    chat_bar_text='Tap here', #設定 Rich Menu 上方的聊天視窗顯示的文字，這裡設定為 "Tap here"。
+    areas=[
+        RichMenuArea(
+            bounds=RichMenuBounds(x=0, y=0, width=600, height=405),
+            action=MessageAction(text='按鈕1')
+        ),
+        RichMenuArea(
+            bounds=RichMenuBounds(x=600, y=0, width=600, height=405),
+            action=MessageAction(text='按鈕2')
+        )
+    ]
+)
+rich_menu_response = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create) #建立rich menu並取得rich menu的id
+rich_menu_id = rich_menu_response['richMenuId']
+
+# 將 Rich Menu 指派給預設使用者（所有使用者在與此 Line Bot互動時都會看到並使用該 Rich Menu）
+line_bot_api.set_default_rich_menu(rich_menu_id)
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
-    rich_menu_to_create = RichMenu(
-        size=RichMenuSize(width=1200, height=405),
-        selected=True, #當使用者加入linebot或重設linebot時，會顯示這個 Rich Menu
-        name='快點啦', 
-        chat_bar_text='Tap here', #設定 Rich Menu 上方的聊天視窗顯示的文字，這裡設定為 "Tap here"。
-        areas=[
-            RichMenuArea(
-                bounds=RichMenuBounds(x=0, y=0, width=1250, height=843),
-                action=MessageAction(text='按鈕1')
-            ),
-            RichMenuArea(
-                bounds=RichMenuBounds(x=1250, y=0, width=1250, height=843),
-                action=MessageAction(text='按鈕2')
-            )
-        ]
-    )
-    rich_menu_response = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create) #建立rich menu並取得rich menu的id
-    rich_menu_id = rich_menu_response['richMenuId']
-
-    # 將 Rich Menu 指派給預設使用者（所有使用者在與此 Line Bot互動時都會看到並使用該 Rich Menu）
-    line_bot_api.set_default_rich_menu(rich_menu_id)
-    
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
