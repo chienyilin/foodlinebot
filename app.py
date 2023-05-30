@@ -212,6 +212,46 @@ def callback():
                         )
                     )
                 )
+            elif event.postback.data[0:1] == "D":
+                    if '酒吧' in event.postback.data:
+                        shoptype = event.postback.data[2:4]
+                        star = event.postback.data[5:]
+                    else:
+                        shoptype = event.postback.data[2:5]
+                        star = event.postback.data[6:]
+                    
+                    line_bot_api.reply_message(   # 回復「選擇地區類別」按鈕樣板訊息
+                        event.reply_token,
+                        TemplateSendMessage(
+                            alt_text='Buttons template',
+                            template=ButtonsTemplate(
+                                title='area',
+                                text='請選擇店家所在區域',
+                                actions=[
+                                    PostbackTemplateAction(  # 將第一、二步驟選擇的餐廳，包含在第三步驟的資料中
+                                        label='公館',
+                                        text='公館',
+                                        data='F&' + shoptype + '&' + star + '&公館'
+                                    ),
+                                    PostbackTemplateAction(
+                                        label='新生',
+                                        text='新生',
+                                        data='F&' + shoptype + '&' + star + '&新生'
+                                    ),
+                                    PostbackTemplateAction(
+                                        label='長興',
+                                        text='長興',
+                                        data='F&' + shoptype + '&' + star + '&長興'
+                                    ),
+                                    PostbackTemplateAction(
+                                        label='118',
+                                        text='118',
+                                        data='F&' + shoptype + '&' + star +  '&118'
+                                    )
+                                ]
+                            )
+                        )
+                    )
             elif event.postback.data[0:1] == "C":
                 if '早午餐' in event.postback.data:
                     restaurant = event.postback.data[2:5]
@@ -230,29 +270,71 @@ def callback():
                                 PostbackTemplateAction(  # 將第一、二步驟選擇的餐廳，包含在第三步驟的資料中
                                     label='4星以上',
                                     text='簡簡單單',
-                                    data='E&' + restaurant + '&' + pricechoice + '&4'
+                                    data='E&' + restaurant + '&4.0' + '&' + pricechoice
                                 ),
                                 PostbackTemplateAction(
                                     label='4.5星以上',
                                     text='真嚴格',
-                                    data='E&' + restaurant + '&' + pricechoice + '&4.5'
+                                    data='E&' + restaurant + '&4.5' + '&' + pricechoice 
                                 ),
                                 PostbackTemplateAction(
                                     label='隨機',
                                     text='都行',
-                                    data='E&' + restaurant + '&' + pricechoice + '&0'
+                                    data='E&' + restaurant + '&0.0' + '&' + pricechoice
                                 )
                             ]
                         )
                     )
                 )
             elif event.postback.data[0:1] == "E":
+                if '早午餐' in event.postback.data:
+                    restaurant = event.postback.data[2:5]
+                    star = event.postback.data[6:9]
+                    pricechoice = event.postback.data[10:]
+                else:
+                    restaurant = event.postback.data[2:4]
+                    star = event.postback.data[5:8]
+                    pricechoice = event.postback.data[9:]
+                line_bot_api.reply_message(   # 回復「選擇評價類別」按鈕樣板訊息
+                    event.reply_token,
+                    TemplateSendMessage(
+                        alt_text='Buttons template',
+                        template=ButtonsTemplate(
+                            title='reviews',
+                            text='請選擇評價限制',
+                            actions=[
+                                PostbackTemplateAction(  # 將第一、二步驟選擇的餐廳，包含在第三步驟的資料中
+                                    label='公館',
+                                    text='公館',
+                                    data='T&' + restaurant + '&' + pricechoice + '&' + star + '&公館'
+                                ),
+                                PostbackTemplateAction(
+                                    label='新生',
+                                    text='新生',
+                                    data='T&' + restaurant + '&' + pricechoice + '&' + star + '&新生'
+                                ),
+                                PostbackTemplateAction(
+                                    label='長興',
+                                    text='長興',
+                                    data='T&' + restaurant + '&' + pricechoice + '&' + star + '&長興'
+                                ),
+                                PostbackTemplateAction(
+                                    label='118',
+                                    text='118',
+                                    data='T&' + restaurant + '&' + pricechoice + '&' + star + '&118'
+                                )
+                            ]
+                        )
+                    )
+                )
+            elif event.postback.data[0:1] == "T":
                 result = event.postback.data.split('&')
                 df_shuffled = df.sample(frac=1)
                 select=df_shuffled['類型']==result[1]
                 select1 = pd.to_numeric(df_shuffled['評價'], errors='coerce') >= float(result[3])
                 select2=df_shuffled['價位']==result[2]
-                selected_rows = df_shuffled[select & select1& select2]
+                select3=df_shuffled['地區']==result[4]
+                selected_rows = df_shuffled[select & select1& select2& select3]
                 if len(selected_rows) >= 5:
                     random_selection = random.sample(selected_rows.index.tolist(),5)
                     random_output= selected_rows.loc[random_selection]
@@ -276,12 +358,13 @@ def callback():
                         event.reply_token,
                         TextSendMessage(text=output_string)
                     )
-            elif event.postback.data[0:1] == "D":
+            elif event.postback.data[0:1] == "F":
                 result = event.postback.data.split('&')
                 df_shuffled = df.sample(frac=1)
                 select=df_shuffled['類型']==result[1]
                 select1 = pd.to_numeric(df_shuffled['評價'], errors='coerce') >= float(result[2])
-                selected_rows = df_shuffled[select & select1]
+                select2=df_shuffled['地區']==result[3]
+                selected_rows = df_shuffled[select & select1& select2]
                 
                 if len(selected_rows) >= 5:
                     random_selection = random.sample(selected_rows.index.tolist(), 5)
