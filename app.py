@@ -54,8 +54,7 @@ rich_menu_to_create = RichMenu(
         )
     ]
 )
-rich_menu_response = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create) #建立rich menu並取得rich menu的id
-rich_menu_id = rich_menu_response['richMenuId']
+rich_menu_id = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create) #建立rich menu並取得rich menu的id
 
 # 將 Rich Menu 指派給預設使用者（所有使用者在與此 Line Bot互動時都會看到並使用該 Rich Menu）
 line_bot_api.set_default_rich_menu(rich_menu_id)
